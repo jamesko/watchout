@@ -1,3 +1,7 @@
+//////////////////////////////
+//  Setup the environment   //
+//////////////////////////////
+
 var gameSettings = {
   height: 450,
   width: 700,
@@ -9,6 +13,9 @@ var gameStats = {
   bestScore: 0  
 };
 
+//////////////////////////////
+//     Setup the Board      //
+//////////////////////////////
 var axes = {
   x: d3.scale.linear().domain([0,100]).range([0,gameSettings.width]),
   y: d3.scale.linear().domain([0,100]).range([0,gameSettings.height])
@@ -19,28 +26,9 @@ var gameBoard = d3.select('.container').append('svg:svg')
                   .attr('height', gameSettings.height)
                   .style('background-color','lightgray');
 
-
-// var Player = function() {
-//   this.fill = 'teal';
-//   this.x = 0;
-//   this.y = 0;
-//   this.r = 5;
-// };
-
-// Player.prototype = {
-//   render: function(board) {
-//     this.player = board.select('circle.player')
-//                   .data(playerData, function(d) {
-//                     return d.id;
-//                   })
-//                   .attr('r', 10)
-//                   .style('background-color','pink');
-//   }
-
-// };
-
-// var newPlayer = new Player(gameSettings);
-// newPlayer.render(gameBoard);
+//////////////////////////////
+//     Setup the Player     //
+//////////////////////////////
 
 var createPlayer = function() {
   return [
@@ -52,7 +40,20 @@ var createPlayer = function() {
   ];
 };
 
+
 var renderPlayer = function(playerData) {
+
+  var dragmove = function(d) {
+    //debugger;
+    d3.select('.player')
+    .attr("cx", d.x = Math.max(0, Math.min(gameSettings.width, d3.event.x)))
+    .attr("cy", d.y = Math.max(0, Math.min(gameSettings.height, d3.event.y)));
+  };
+
+  var drag = d3.behavior.drag()
+    .on("drag", dragmove); 
+
+
   var player = gameBoard.selectAll('circle.player')
                         .data(playerData, function(d) {
                           return d.id;
@@ -67,9 +68,13 @@ var renderPlayer = function(playerData) {
       return axes.y(playa.y); 
     })
     .attr('fill','brown')
-    .attr('r', 10);
+    .attr('r', 10)
+    .call(drag);
 };
 
+//////////////////////////////
+//         Enemies          //
+//////////////////////////////
 
 var createEnemies = function() {
   return _.range(0,gameSettings.nEnemies).map(function(i) {
@@ -80,6 +85,10 @@ var createEnemies = function() {
     };
   });
 };
+
+//////////////////////////////
+//     Render the Board     //
+//////////////////////////////
 
 var render = function(enemyData) {
   var enemies = gameBoard.selectAll('circle.enemy')
@@ -134,6 +143,9 @@ var render = function(enemyData) {
       .tween('custom', tweenFn);
 };
 
+//////////////////////////////
+//      Play the Game       //
+//////////////////////////////
 
 var play = function() {
   var gameTurn = function(){    
