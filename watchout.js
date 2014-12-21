@@ -56,7 +56,6 @@ var createPlayer = function() {
 var renderPlayer = function(playerData) {
 
   var dragmove = function(d) {
-    //debugger;
     d3.select('.player')
     .attr("cx", d.x = Math.max(0, Math.min(gameSettings.width, d3.event.x)))
     .attr("cy", d.y = Math.max(0, Math.min(gameSettings.height, d3.event.y)));
@@ -119,6 +118,7 @@ var render = function(enemyData) {
     })
     .attr('r', 10);
 
+
   enemies.exit() 
      .remove();
 
@@ -160,9 +160,6 @@ var render = function(enemyData) {
   };
 
   enemies
-    // .transition()
-    //   .duration(500)
-    //   .attr('r', 10)
     .transition() 
       .duration(gameStats.duration)
       .tween('custom', tweenFn);
@@ -179,7 +176,6 @@ var onCollision = function(){
   gameStats.score = 0;
   updateScore();
 }
-
 
 //////////////////////////////
 //      Play the Game       //
